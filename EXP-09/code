@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split into training and testing datasets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train the Neural Network
+model = MLPClassifier(hidden_layer_sizes=(10,), activation='relu', solver='adam',
+                      max_iter=500, random_state=42, verbose=True)
+
+model.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"\nTest Accuracy: {accuracy * 100:.2f}%")
+
+# Plot the Loss Curve
+plt.figure(figsize=(8, 5))
+plt.plot(model.loss_curve_, label='Training Loss')
+plt.title('Training Loss Curve')
+plt.xlabel('Iterations')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Example prediction
+sample = X_test[0].reshape(1, -1)
+predicted_class = model.predict(sample)
+print(f"\nSample Data: {sample}")
+print(f"Predicted Class: {predicted_class}")
+print(f"Actual Class: {y_test[0]}")
